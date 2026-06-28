@@ -16,7 +16,7 @@ La pastille en haut à droite du titre indique le mode actif (jaune = local, ver
 
 ## 1. Tester tout de suite (mode local)
 
-Ouvre simplement `Nidouille.html` dans un navigateur.
+Ouvre simplement `index.html` dans un navigateur.
 6 meubles de démo se chargent automatiquement la première fois.
 
 > Astuce : pour repartir de zéro, ouvre la console et tape
@@ -32,7 +32,7 @@ Ouvre simplement `Nidouille.html` dans un navigateur.
 3. Va dans **Project Settings → API** et copie :
    - **Project URL**
    - la clé **`anon` `public`**
-4. Ouvre `Nidouille.html` et renseigne le bloc config en haut du `<script>` :
+4. Ouvre `index.html` et renseigne le bloc config en haut du `<script>` :
    ```js
    const SUPABASE_URL      = "https://xxxx.supabase.co";
    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiI...";
@@ -53,9 +53,7 @@ git push -u origin main
 ```
 
 Puis sur GitHub : **Settings → Pages → Source : `main` / root**.
-L'app sera servie sur `https://<ton-user>.github.io/nidouille/Nidouille.html`.
-
-> Pour une URL plus courte (`.../nidouille/`), renomme le fichier en `index.html`.
+L'app sera servie sur `https://<ton-user>.github.io/nidouille/`.
 
 ---
 
