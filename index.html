@@ -122,6 +122,11 @@
   .meta-line{display:flex;align-items:center;justify-content:space-between;margin-top:11px;gap:10px}
   .vendor{font-size:13px;color:var(--ink-soft);display:flex;align-items:center;gap:5px;min-width:0}
   .vendor span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .card-desc{
+    margin:8px 0 0;font-size:13.5px;line-height:1.45;color:var(--ink-soft);
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;
+    overflow:hidden;text-overflow:ellipsis;
+  }
   .by{
     font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;
     border:1px solid var(--line);color:var(--ink-soft);background:#fff;white-space:nowrap;
@@ -598,6 +603,7 @@
         <div class="meta-line">
           <div class="vendor">🏬 <span>${it.vendor?esc(it.vendor):"Vendeur inconnu"}</span></div>
         </div>
+        ${it.description ? `<p class="card-desc">${esc(it.description)}</p>` : ""}
       </div>
     </article>`;
   }
