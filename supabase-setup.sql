@@ -15,7 +15,7 @@ create table if not exists public.items (
   "by"    text,                                  -- "louis" | "pauline"
   ratings jsonb default '{"louis":0,"pauline":0}'::jsonb,  -- note 0-5 par personne
   purchased boolean default false,               -- "✅ On l'achète !"
-  comments jsonb default '[]'::jsonb,             -- [{author, text, ts}]
+  description text default '',                  -- note/description écrite par le créateur de la fiche
   created bigint                                 -- timestamp en millisecondes
 );
 
@@ -23,11 +23,13 @@ create table if not exists public.items (
 alter table public.items add column if not exists subcat text;
 alter table public.items add column if not exists ratings jsonb default '{"louis":0,"pauline":0}'::jsonb;
 alter table public.items add column if not exists purchased boolean default false;
-alter table public.items add column if not exists comments jsonb default '[]'::jsonb;
+alter table public.items add column if not exists description text default '';
 
--- L'ancien système de votes ❤️ est remplacé par les notes ci-dessus.
--- Décommente si tu veux nettoyer la colonne devenue inutile :
+-- L'ancien système de votes ❤️ (votes) et le fil de commentaires (comments)
+-- sont remplacés respectivement par les notes et la description ci-dessus.
+-- Décommente si tu veux nettoyer les colonnes devenues inutiles :
 -- alter table public.items drop column if exists votes;
+-- alter table public.items drop column if exists comments;
 
 -- Sécurité au niveau des lignes
 alter table public.items enable row level security;

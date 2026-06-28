@@ -287,20 +287,17 @@
   .rate-who .chip.louis{color:#2f6b5c;background:#e8f5f0;border-color:#9cd3c0}
   .rate-who .chip.pauline{color:#933f72;background:#fbe9f3;border-color:#eeb9d6}
 
-  /* ---------- Commentaires ---------- */
-  .comments{margin-top:20px}
-  .comments h4{font-size:12.5px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;
-    letter-spacing:.5px;margin:0 0 10px}
-  .comment{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:10px 13px;margin-bottom:8px}
-  .comment .c-head{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:3px}
-  .comment .c-text{font-size:14px;color:var(--ink);word-break:break-word}
-  .no-comments{font-size:13px;color:var(--ink-soft);margin:0 0 10px}
-  .comment-form{display:flex;gap:8px;margin-top:10px}
-  .comment-form input{flex:1;border:1px solid var(--line);border-radius:12px;padding:11px 13px;
-    font:inherit;font-size:14px;background:#fff;outline:none}
-  .comment-form input:focus{border-color:var(--accent)}
-  .comment-form button{border:0;background:var(--accent);color:#fff;border-radius:12px;padding:0 17px;
-    font:inherit;font-weight:800;cursor:pointer}
+  /* ---------- Description (texte libre, écrit par le créateur de la fiche) ---------- */
+  .field textarea{
+    width:100%;border:1px solid var(--line);background:var(--card);border-radius:13px;
+    padding:13px 14px;font:inherit;font-size:15.5px;color:var(--ink);outline:none;transition:.18s;
+    resize:vertical;min-height:80px;
+  }
+  .field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,139,107,.16)}
+  .m-desc{margin-top:18px}
+  .m-desc h4{font-size:12.5px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;
+    letter-spacing:.5px;margin:0 0 8px}
+  .m-desc p{font-size:14.5px;color:var(--ink);line-height:1.55;margin:0;white-space:pre-wrap;word-break:break-word}
 
   /* ---------- Filtres catalogue ---------- */
   .filterbar{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 16px;margin:0 -2px -4px;
@@ -422,6 +419,11 @@
         </div>
 
         <div class="field">
+          <label>Description / note (optionnel)</label>
+          <textarea id="f-desc" placeholder="Ex. Vu chez Merci, correspond bien au salon" maxlength="500"></textarea>
+        </div>
+
+        <div class="field">
           <label>Ajouté par</label>
           <div class="seg" id="addedBy">
             <button type="button" data-who="louis" class="active louis">Louis</button>
@@ -523,8 +525,9 @@
     if(!it.ratings || typeof it.ratings!=="object") it.ratings={louis:0,pauline:0};
     else it.ratings={louis:Number(it.ratings.louis)||0, pauline:Number(it.ratings.pauline)||0};
     if(typeof it.purchased!=="boolean") it.purchased=false;
-    if(!Array.isArray(it.comments)) it.comments=[];
+    if(typeof it.description!=="string") it.description = "";
     delete it.votes;
+    delete it.comments;
     return it;
   }
   function lsSave(){ localStorage.setItem(KEY, JSON.stringify(items)); }
@@ -716,14 +719,6 @@
     toast(it.purchased ? "✅ Marqué comme acheté" : "Retiré des achats confirmés");
     persistField(id, {purchased: it.purchased});
   }
-  function addComment(id, text){
-    text=(text||"").trim(); if(!text) return;
-    const it=items.find(x=>x.id===id); if(!it)return;
-    it.comments=[...(it.comments||[]), {author:me, text, ts:Date.now()}];
-    renderAll();
-    if(modalOpenId===id) openModal(id);
-    persistField(id, {comments: it.comments});
-  }
   async function persistField(id, patch){
     if(CLOUD){
       flashSync();
@@ -743,13 +738,11 @@
     const linkBtn = validUrl(it.link)
       ? `<a class="m-link" href="${esc(it.link)}" target="_blank" rel="noopener">🔗 Voir chez le vendeur</a>` : "";
     const byLabel = label(it.by);
-    const commentsHtml = (it.comments&&it.comments.length)
-      ? it.comments.slice().sort((a,b)=>a.ts-b.ts).map(c=>`
-        <div class="comment">
-          <div class="c-head"><span>${esc(label(c.author))}</span><span>${timeAgo(c.ts)}</span></div>
-          <div class="c-text">${esc(c.text)}</div>
-        </div>`).join("")
-      : `<p class="no-comments">Aucun commentaire pour l'instant.</p>`;
+    const descHtml = it.description ? `
+        <div class="m-desc">
+          <h4>Description</h4>
+          <p>${esc(it.description)}</p>
+        </div>` : "";
 
     $("#modal").innerHTML = `
       <div class="grab"></div>
@@ -773,6 +766,7 @@
           <div class="m-row"><span class="k">Note moyenne</span><span class="v">${avg?`★ ${avg.toFixed(1)} (${cnt})`:"—"}</span></div>
           <div class="m-row"><span class="k">Ajouté</span><span class="v">${timeAgo(it.created)} · ${byLabel}</span></div>
         </div>
+        ${descHtml}
 
         <div style="text-align:center;margin-top:18px">
           <div style="font-size:13px;font-weight:800;color:var(--ink-soft);margin-bottom:6px">Ta note, ${esc(label(me))}</div>
@@ -790,15 +784,6 @@
         <div class="m-actions">
           <button class="m-edit" data-edit="${it.id}">✏️ Modifier</button>
           ${linkBtn}
-        </div>
-
-        <div class="comments">
-          <h4>Commentaires</h4>
-          ${commentsHtml}
-          <form class="comment-form" data-comment="${it.id}">
-            <input type="text" placeholder="Ajouter une note…" maxlength="200" required>
-            <button type="submit">Envoyer</button>
-          </form>
         </div>
 
         <button class="m-del" data-del="${it.id}">🗑️ Supprimer ce meuble</button>
@@ -907,6 +892,7 @@
       vendor: $("#f-vendor").value.trim(),
       link: $("#f-link").value.trim(),
       photo: $("#f-photo").value.trim(),
+      description: $("#f-desc").value.trim(),
       by: formAddedBy
     };
     if(editingId){
@@ -914,7 +900,7 @@
       if(it){ Object.assign(it, base); updateItem(it); toast("✏️ "+name+" mis à jour"); }
       editingId=null;
     } else {
-      const it=Object.assign({id:genId(), ratings:{louis:0,pauline:0}, purchased:false, comments:[], created:Date.now()}, base);
+      const it=Object.assign({id:genId(), ratings:{louis:0,pauline:0}, purchased:false, created:Date.now()}, base);
       addItem(it);
       toast("✨ "+name+" ajouté !");
     }
@@ -941,6 +927,7 @@
     $("#f-link").value=it.link||"";
     $("#f-photo").value=it.photo||"";
     if(validUrl(it.photo)){ const img=$("#photoPreview"); img.src=it.photo; img.style.display="block"; }
+    $("#f-desc").value=it.description||"";
     formAddedBy=it.by; updateAddedByUI();
     $("#addTitle").innerHTML='Modifier le meuble<small id="addSubtitle">Mets à jour les infos puis enregistre</small>';
     $("#submitBtn").textContent="Enregistrer les modifications";
@@ -983,17 +970,6 @@
 
     const card=e.target.closest(".card");
     if(card){ openModal(card.dataset.id); return; }
-  });
-
-  // ajout d'un commentaire (formulaire généré dynamiquement dans la modale)
-  document.addEventListener("submit",e=>{
-    const cf=e.target.closest("[data-comment]");
-    if(cf){
-      e.preventDefault();
-      const input=cf.querySelector("input");
-      addComment(cf.dataset.comment, input.value);
-      input.value="";
-    }
   });
 
   // modal close : clic hors modale, Escape, ou swipe vers le bas
@@ -1080,7 +1056,7 @@
       flashSync();
       const {error}=await sb.from("items").update({
         name:it.name, cat:it.cat, subcat:it.subcat, price:it.price,
-        vendor:it.vendor, link:it.link, photo:it.photo, by:it.by
+        vendor:it.vendor, link:it.link, photo:it.photo, description:it.description, by:it.by
       }).eq("id",it.id);
       if(error){ toast("⚠️ Modification non synchronisée"); console.error(error); }
     } else lsSave();
@@ -1096,7 +1072,7 @@
       vendor:r.vendor||"", link:r.link||"", photo:r.photo||"", by:r.by==="pauline"?"pauline":"louis",
       ratings:(r.ratings&&typeof r.ratings==="object")?{louis:Number(r.ratings.louis)||0,pauline:Number(r.ratings.pauline)||0}:{louis:0,pauline:0},
       purchased: !!r.purchased,
-      comments: Array.isArray(r.comments) ? r.comments.map(c=>({author:c.author==="pauline"?"pauline":"louis", text:String(c.text||""), ts:Number(c.ts)||Date.now()})) : [],
+      description: r.description||"",
       created:Number(r.created)||Date.now()
     };
   }
@@ -1131,12 +1107,12 @@
 
   /* ---------- meubles de démo ---------- */
   const DEMO=[
-    {name:"Canapé velours côtelé",  cat:"Canapé",    price:"899", vendor:"Maisons du Monde",        link:"https://www.maisonsdumonde.com", photo:"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80", by:"louis",   ratings:{louis:5,pauline:4}, purchased:false, comments:[]},
-    {name:"Chaise scandinave chêne",cat:"Chaise",    price:"79",  vendor:"IKEA",                    link:"https://www.ikea.com",            photo:"https://images.unsplash.com/photo-1503602642458-232111445657?w=800&q=80", by:"pauline", ratings:{louis:0,pauline:4}, purchased:false, comments:[]},
-    {name:"Table basse travertin",  cat:"Table basse",price:"349", vendor:"Westwing",                link:"https://www.westwing.fr",         photo:"https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=800&q=80", by:"louis",   ratings:{louis:4,pauline:0}, purchased:false, comments:[]},
-    {name:"Lit cannage 160×200",    cat:"Lit",       price:"599", vendor:"La Redoute Intérieurs",   link:"https://www.laredoute.fr",        photo:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80", by:"pauline", ratings:{louis:5,pauline:5}, purchased:true,  comments:[]},
-    {name:"Bibliothèque rotin",     cat:"Rangement", price:"249", vendor:"Made.com",                link:"",                                 photo:"https://images.unsplash.com/photo-1594620302200-9a762244a156?w=800&q=80", by:"louis",   ratings:{louis:0,pauline:0}, purchased:false, comments:[]},
-    {name:"Lampe arc dorée",        cat:"Luminaire", subcat:"Lampadaire", price:"129", vendor:"Amazon",                  link:"https://www.amazon.fr",           photo:"https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800&q=80", by:"pauline", ratings:{louis:4,pauline:0}, purchased:false, comments:[]}
+    {name:"Canapé velours côtelé",  cat:"Canapé",    price:"899", vendor:"Maisons du Monde",        link:"https://www.maisonsdumonde.com", photo:"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80", by:"louis",   ratings:{louis:5,pauline:4}, purchased:false, description:""},
+    {name:"Chaise scandinave chêne",cat:"Chaise",    price:"79",  vendor:"IKEA",                    link:"https://www.ikea.com",            photo:"https://images.unsplash.com/photo-1503602642458-232111445657?w=800&q=80", by:"pauline", ratings:{louis:0,pauline:4}, purchased:false, description:""},
+    {name:"Table basse travertin",  cat:"Table basse",price:"349", vendor:"Westwing",                link:"https://www.westwing.fr",         photo:"https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=800&q=80", by:"louis",   ratings:{louis:4,pauline:0}, purchased:false, description:""},
+    {name:"Lit cannage 160×200",    cat:"Lit",       price:"599", vendor:"La Redoute Intérieurs",   link:"https://www.laredoute.fr",        photo:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80", by:"pauline", ratings:{louis:5,pauline:5}, purchased:true,  description:""},
+    {name:"Bibliothèque rotin",     cat:"Rangement", price:"249", vendor:"Made.com",                link:"",                                 photo:"https://images.unsplash.com/photo-1594620302200-9a762244a156?w=800&q=80", by:"louis",   ratings:{louis:0,pauline:0}, purchased:false, description:""},
+    {name:"Lampe arc dorée",        cat:"Luminaire", subcat:"Lampadaire", price:"129", vendor:"Amazon",                  link:"https://www.amazon.fr",           photo:"https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800&q=80", by:"pauline", ratings:{louis:4,pauline:0}, purchased:false, description:""}
   ];
   async function maybeSeed(){
     if(!SEED_DEMO || items.length || localStorage.getItem("nidouille.seeded")) return;
