@@ -137,22 +137,18 @@
     box-shadow:0 4px 12px rgba(74,64,56,.22);
   }
   .photo-rating{
-    position:absolute;bottom:10px;right:10px;z-index:2;
+    position:absolute;bottom:10px;right:10px;z-index:2;max-width:calc(100% - 20px);
     background:rgba(255,250,243,.92);color:#b5811f;font-weight:800;font-size:12.5px;
     padding:5px 10px;border-radius:999px;box-shadow:0 4px 12px rgba(74,64,56,.22);
-    display:flex;align-items:center;gap:3px;
+    display:flex;align-items:center;gap:3px;white-space:nowrap;
   }
   .stars{display:inline-flex;gap:1px}
   .stars .star-btn{border:0;background:transparent;padding:2px;cursor:pointer;
     font-size:18px;line-height:1;color:#d8c9b8;transition:transform .12s}
   .stars .star-btn.filled{color:#e3a73f}
   .stars .star-btn:active{transform:scale(1.25)}
-  .stars.stars-sm .star-btn{font-size:15px;padding:1px}
   .stars.m-stars{display:flex;justify-content:center;gap:5px;margin-bottom:6px}
   .stars.m-stars .star-btn{font-size:32px}
-  .rating-line{margin-top:8px;display:flex;align-items:center;gap:6px}
-  .rating-badge{font-weight:800;color:#b5811f;font-size:13px}
-  .rating-count{font-size:12px;color:var(--ink-soft);font-weight:600}
 
   /* crown / top pick */
   .crown{
@@ -543,7 +539,7 @@
   }
   function ratingStarsText(v){ return v ? "★".repeat(v)+"☆".repeat(5-v) : "pas encore noté"; }
   function starsHtml(value,size,interactive,id){
-    const cls="stars"+(size==="lg"?" m-stars":size==="sm"?" stars-sm":"");
+    const cls="stars"+(size==="lg"?" m-stars":"");
     let h=`<span class="${cls}">`;
     for(let i=1;i<=5;i++){
       h+=`<button type="button" class="star-btn ${i<=value?'filled':''}" ${interactive?`data-rate="${id}" data-val="${i}"`:"disabled"}>★</button>`;
@@ -578,10 +574,10 @@
 
   function cardHtml(it, opts){
     opts=opts||{};
-    const avg=avgRating(it), myRating=(it.ratings&&it.ratings[me])||0;
+    const avg=avgRating(it);
     const photoLink = validUrl(it.link)
       ? `<a class="photo-link" href="${esc(it.link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Voir le produit">🔗</a>` : "";
-    const photoRating = avg ? `<div class="photo-rating">★ ${avg.toFixed(1)}</div>` : "";
+    const photoRating = `<div class="photo-rating">${avg ? `★ ${avg.toFixed(1)}` : "Pas encore de note"}</div>`;
     const crown = opts.top ? `<div class="crown">👑 Top pick</div>` : "";
     const byClass = it.by==="pauline"?"pauline":"louis";
     const byLabel = label(it.by);
@@ -601,9 +597,6 @@
         </div>
         <div class="meta-line">
           <div class="vendor">🏬 <span>${it.vendor?esc(it.vendor):"Vendeur inconnu"}</span></div>
-        </div>
-        <div class="rating-line">
-          ${starsHtml(myRating,"sm",true,it.id)}
         </div>
       </div>
     </article>`;
