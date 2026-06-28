@@ -128,22 +128,23 @@
   .by.louis{color:#3d7a6a;background:#e8f5f0;border-color:#cce8de}
   .by.pauline{color:#a0567f;background:#fbe9f3;border-color:#f2d2e3}
 
-  /* heart + link */
+  /* rating stars + link */
   .actions{display:flex;align-items:center;gap:6px}
-  .heart-btn{
-    display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);
-    background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;font:inherit;
-    font-weight:800;font-size:14px;color:var(--ink-soft);transition:.18s;
-  }
-  .heart-btn .hi{font-size:16px;transition:transform .2s}
-  .heart-btn.voted{background:#fdecea;border-color:#f6cfca;color:var(--heart)}
-  .heart-btn:active .hi{transform:scale(1.35)}
-  .heart-btn.pop .hi{animation:pop .4s}
-  @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
   .link-pill{
     width:34px;height:34px;border-radius:999px;border:1px solid var(--line);background:#fff;
     display:grid;place-items:center;color:var(--accent);text-decoration:none;font-size:15px;flex:none;
   }
+  .stars{display:inline-flex;gap:1px}
+  .stars .star-btn{border:0;background:transparent;padding:2px;cursor:pointer;
+    font-size:18px;line-height:1;color:#d8c9b8;transition:transform .12s}
+  .stars .star-btn.filled{color:#e3a73f}
+  .stars .star-btn:active{transform:scale(1.25)}
+  .stars.stars-sm .star-btn{font-size:15px;padding:1px}
+  .stars.m-stars{display:flex;justify-content:center;gap:5px;margin-bottom:6px}
+  .stars.m-stars .star-btn{font-size:32px}
+  .rating-line{margin-top:8px;display:flex;align-items:center;gap:6px}
+  .rating-badge{font-weight:800;color:#b5811f;font-size:13px}
+  .rating-count{font-size:12px;color:var(--ink-soft);font-weight:600}
 
   /* crown / top pick */
   .crown{
@@ -259,13 +260,19 @@
   .m-row:last-child{border-bottom:0}
   .m-row .k{color:var(--ink-soft);font-weight:600}
   .m-row .v{font-weight:700;text-align:right}
-  .m-actions{display:flex;gap:11px;margin-top:18px}
-  .m-vote{
+  .m-actions{display:flex;gap:11px;margin-top:12px}
+  .m-edit{
     flex:1;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:14px;
-    font:inherit;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;
-    justify-content:center;gap:8px;color:var(--ink);transition:.18s;
+    font:inherit;font-weight:800;font-size:16px;cursor:pointer;color:var(--ink);transition:.18s;
   }
-  .m-vote.voted{background:#fdecea;border-color:#f6cfca;color:var(--heart)}
+  .m-buy{
+    width:100%;margin-top:18px;border:1px solid var(--line);background:var(--card);border-radius:14px;
+    padding:14px;font:inherit;font-weight:800;font-size:15.5px;cursor:pointer;display:flex;
+    align-items:center;justify-content:center;gap:8px;color:var(--ink);transition:.18s;
+  }
+  .m-buy.on{background:#e3f5ea;border-color:#bfe6cf;color:#2f8a55}
+  .purchased-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;
+    padding:3px 9px;border-radius:999px;background:#e3f5ea;color:#2f8a55;border:1px solid #bfe6cf}
   .m-link{
     flex:1;text-decoration:none;border:0;border-radius:14px;padding:14px;
     background:linear-gradient(135deg,var(--accent),#e0a583);color:#fff;font-weight:800;font-size:16px;
@@ -275,10 +282,43 @@
     margin-top:12px;width:100%;border:1px solid #f0d3cf;background:#fff;color:#c25b54;
     border-radius:14px;padding:13px;font:inherit;font-weight:700;font-size:14.5px;cursor:pointer
   }
-  .vote-who{display:flex;gap:6px;margin-top:10px;justify-content:center;flex-wrap:wrap}
-  .vote-who .chip{font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--ink-soft)}
-  .vote-who .chip.on.louis{color:#2f6b5c;background:#e8f5f0;border-color:#9cd3c0}
-  .vote-who .chip.on.pauline{color:#933f72;background:#fbe9f3;border-color:#eeb9d6}
+  .rate-who{display:flex;gap:6px;margin-top:10px;justify-content:center;flex-wrap:wrap}
+  .rate-who .chip{font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--ink-soft)}
+  .rate-who .chip.louis{color:#2f6b5c;background:#e8f5f0;border-color:#9cd3c0}
+  .rate-who .chip.pauline{color:#933f72;background:#fbe9f3;border-color:#eeb9d6}
+
+  /* ---------- Commentaires ---------- */
+  .comments{margin-top:20px}
+  .comments h4{font-size:12.5px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;
+    letter-spacing:.5px;margin:0 0 10px}
+  .comment{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:10px 13px;margin-bottom:8px}
+  .comment .c-head{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:3px}
+  .comment .c-text{font-size:14px;color:var(--ink);word-break:break-word}
+  .no-comments{font-size:13px;color:var(--ink-soft);margin:0 0 10px}
+  .comment-form{display:flex;gap:8px;margin-top:10px}
+  .comment-form input{flex:1;border:1px solid var(--line);border-radius:12px;padding:11px 13px;
+    font:inherit;font-size:14px;background:#fff;outline:none}
+  .comment-form input:focus{border-color:var(--accent)}
+  .comment-form button{border:0;background:var(--accent);color:#fff;border-radius:12px;padding:0 17px;
+    font:inherit;font-weight:800;cursor:pointer}
+
+  /* ---------- Filtres catalogue ---------- */
+  .filterbar{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 16px;margin:0 -2px -4px;
+    scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch}
+  .filterbar::-webkit-scrollbar{display:none}
+  .filterbar .chip{flex:none;white-space:nowrap;border:1px solid var(--line);background:var(--card);
+    border-radius:999px;padding:8px 14px;font:inherit;font-size:13.5px;font-weight:700;
+    color:var(--ink-soft);cursor:pointer;transition:.15s}
+  .filterbar .chip.on{background:var(--accent);border-color:var(--accent);color:#fff;
+    box-shadow:0 3px 10px rgba(201,139,107,.35)}
+  .filterbar .chip.coeur.on{background:#2f8a55;border-color:#2f8a55}
+
+  /* ---------- Pull-to-refresh ---------- */
+  .pull-indicator{display:flex;align-items:center;justify-content:center;height:0;overflow:hidden;
+    color:var(--ink-soft);font-size:12.5px;font-weight:700;gap:8px;transition:height .15s ease}
+  .pull-indicator .spin{width:15px;height:15px;border-radius:50%;border:2px solid var(--accent-soft);
+    border-top-color:var(--accent);animation:spin .7s linear infinite;flex:none}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
   /* ---------- Écran de choix d'identité ---------- */
   .gate{position:fixed;inset:0;z-index:200;background:var(--cream);
@@ -322,19 +362,21 @@
   <main>
     <!-- ============ FEED ============ -->
     <section class="view active" id="view-feed">
+      <div class="pull-indicator" id="pullIndicator"><span class="spin"></span><span id="pullLabel">Tirez pour rafraîchir</span></div>
       <h1 class="view-title">Nos trouvailles<small>Les derniers ajouts, du plus récent au plus ancien</small></h1>
       <div id="feedList"></div>
     </section>
 
     <!-- ============ CATALOGUE ============ -->
     <section class="view" id="view-catalogue">
-      <h1 class="view-title">Catalogue<small>Classé par catégorie, trié par ❤️</small></h1>
+      <h1 class="view-title">Catalogue<small>Classé par catégorie, trié par ★</small></h1>
+      <div class="filterbar" id="filterBar"></div>
       <div id="catList"></div>
     </section>
 
     <!-- ============ AJOUTER ============ -->
     <section class="view" id="view-add">
-      <h1 class="view-title">Ajouter un meuble<small>Une jolie trouvaille à partager ?</small></h1>
+      <h1 class="view-title" id="addTitle">Ajouter un meuble<small id="addSubtitle">Une jolie trouvaille à partager ?</small></h1>
       <form id="addForm">
         <div class="field">
           <label>Nom *</label>
@@ -387,7 +429,7 @@
           </div>
         </div>
 
-        <button class="submit" type="submit">Ajouter au catalogue</button>
+        <button class="submit" type="submit" id="submitBtn">Ajouter au catalogue</button>
       </form>
     </section>
   </main>
@@ -464,18 +506,25 @@
   let me = localStorage.getItem("nidouille.me"); // "louis" | "pauline" | null (choisi à l'entrée)
   let formAddedBy = me || "louis";  // qui ajoute le meuble dans le form
   let modalOpenId = null;           // meuble ouvert dans la modale (refresh temps réel)
+  let editingId = null;             // id du meuble en cours d'édition (formulaire "Ajouter" réutilisé)
+  let activeCats = new Set();       // filtres catégorie actifs dans le Catalogue (vide = tous)
+  let onlyConfirmed = false;        // filtre "✅ Coups de cœur" (achats confirmés)
 
   /* ---------- stockage local (cache + hors-ligne) ---------- */
   function lsLoad(){
     try{ return (JSON.parse(localStorage.getItem(KEY)) || []).map(migrate); }
     catch(e){ return []; }
   }
-  // Compat. : convertit l'ancienne identité "moi" en "louis"
+  // Compat. : convertit l'ancienne identité "moi" en "louis", et les anciens
+  // votes ❤️ en notes par défaut (le système de like est entièrement retiré).
   function migrate(it){
     if(!it) return it;
     if(it.by==="moi") it.by="louis";
-    const v=it.votes||{};
-    it.votes={louis:!!(v.louis||v.moi), pauline:!!v.pauline};
+    if(!it.ratings || typeof it.ratings!=="object") it.ratings={louis:0,pauline:0};
+    else it.ratings={louis:Number(it.ratings.louis)||0, pauline:Number(it.ratings.pauline)||0};
+    if(typeof it.purchased!=="boolean") it.purchased=false;
+    if(!Array.isArray(it.comments)) it.comments=[];
+    delete it.votes;
     return it;
   }
   function lsSave(){ localStorage.setItem(KEY, JSON.stringify(items)); }
@@ -485,8 +534,25 @@
   const $ = s => document.querySelector(s);
   const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const fmtPrice = p => (p===""||p==null||isNaN(p)) ? "—" : (Number(p)%1===0 ? Number(p)+" €" : Number(p).toFixed(2).replace(".",",")+" €");
-  const voteCount = it => (it.votes.louis?1:0)+(it.votes.pauline?1:0);
   const validUrl = u => /^https?:\/\//i.test(u||"");
+  // ---- notation 0-5 étoiles (remplace les ❤️) ----
+  function avgRating(it){
+    const r=it.ratings||{louis:0,pauline:0};
+    const vals=[r.louis,r.pauline].filter(v=>v>0);
+    return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+  }
+  function ratingCount(it){
+    const r=it.ratings||{}; return [r.louis,r.pauline].filter(v=>v>0).length;
+  }
+  function ratingStarsText(v){ return v ? "★".repeat(v)+"☆".repeat(5-v) : "pas encore noté"; }
+  function starsHtml(value,size,interactive,id){
+    const cls="stars"+(size==="lg"?" m-stars":size==="sm"?" stars-sm":"");
+    let h=`<span class="${cls}">`;
+    for(let i=1;i<=5;i++){
+      h+=`<button type="button" class="star-btn ${i<=value?'filled':''}" ${interactive?`data-rate="${id}" data-val="${i}" onclick="event.stopPropagation()"`:"disabled"}>★</button>`;
+    }
+    return h+"</span>";
+  }
   function timeAgo(ts){
     const d=Math.floor((Date.now()-ts)/1000);
     if(d<60)return "à l'instant";
@@ -515,8 +581,7 @@
 
   function cardHtml(it, opts){
     opts=opts||{};
-    const vc=voteCount(it);
-    const voted = it.votes[me];
+    const avg=avgRating(it), cnt=ratingCount(it), myRating=(it.ratings&&it.ratings[me])||0;
     const linkPill = validUrl(it.link)
       ? `<a class="link-pill" href="${esc(it.link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Voir le produit">🔗</a>` : "";
     const crown = opts.top ? `<div class="crown">👑 Top pick</div>` : "";
@@ -534,15 +599,17 @@
           <span class="badge">${CAT_EMOJI[it.cat]||"📦"} ${esc(it.cat)}</span>
           ${it.subcat?`<span class="badge sub">${esc(it.subcat)}</span>`:""}
           <span class="by ${byClass}">👤 ${byLabel}</span>
+          ${it.purchased?'<span class="purchased-badge">✅ Achat confirmé</span>':""}
         </div>
         <div class="meta-line">
           <div class="vendor">🏬 <span>${it.vendor?esc(it.vendor):"Vendeur inconnu"}</span></div>
           <div class="actions">
             ${linkPill}
-            <button class="heart-btn ${voted?'voted':''}" data-vote="${it.id}" onclick="event.stopPropagation()">
-              <span class="hi">${voted?'❤️':'🤍'}</span>${vc}
-            </button>
+            ${starsHtml(myRating,"sm",true,it.id)}
           </div>
+        </div>
+        <div class="rating-line">
+          ${avg ? `<span class="rating-badge">★ ${avg.toFixed(1)}</span><span class="rating-count">(${cnt} avis)</span>` : `<span class="rating-count">Pas encore noté</span>`}
         </div>
       </div>
     </article>`;
@@ -559,20 +626,40 @@
     list.innerHTML = sorted.map(it=>cardHtml(it)).join("");
   }
 
+  /* ---------- barre de filtres (Catalogue) ---------- */
+  function renderFilterBar(){
+    const allOn = activeCats.size===0;
+    let html = `<button class="chip ${allOn?'on':''}" data-filtercat="__all__">Tous</button>`;
+    CATS.forEach(c=>{
+      html += `<button class="chip ${activeCats.has(c)?'on':''}" data-filtercat="${esc(c)}">${CAT_EMOJI[c]||''} ${esc(c)}</button>`;
+    });
+    html += `<button class="chip coeur ${onlyConfirmed?'on':''}" data-filterconfirmed="1">✅ Coups de cœur</button>`;
+    $("#filterBar").innerHTML = html;
+  }
+
   /* ---------- render catalogue ---------- */
   function renderCatalogue(){
+    renderFilterBar();
     const list=$("#catList");
+    let base = items;
+    if(activeCats.size) base = base.filter(it=>activeCats.has(it.cat));
+    if(onlyConfirmed) base = base.filter(it=>it.purchased);
+
     if(!items.length){
-      list.innerHTML = emptyHtml("📚","Catalogue vide","Vos meubles apparaîtront ici, classés par catégorie et triés par cœurs.");
+      list.innerHTML = emptyHtml("📚","Catalogue vide","Vos meubles apparaîtront ici, classés par catégorie et triés par note.");
       return;
     }
-    const byRank=(a,b)=>voteCount(b)-voteCount(a) || b.created-a.created;
+    if(!base.length){
+      list.innerHTML = emptyHtml("🔍","Aucun résultat","Aucun meuble ne correspond à ces filtres.");
+      return;
+    }
+    const byRank=(a,b)=>avgRating(b)-avgRating(a) || b.created-a.created;
     let html="";
     CATS.forEach(cat=>{
-      const group=items.filter(it=>it.cat===cat).sort(byRank);
+      const group=base.filter(it=>it.cat===cat).sort(byRank);
       if(!group.length) return;
       // Top pick = #1 de toute la catégorie (visible même quand on sous-classe)
-      const topId = voteCount(group[0])>0 ? group[0].id : null;
+      const topId = avgRating(group[0])>0 ? group[0].id : null;
       const subs = SUBCATS[cat];
       let inner;
       if(subs){
@@ -610,23 +697,38 @@
 
   function renderAll(){ renderFeed(); renderCatalogue(); }
 
-  /* ---------- voting ---------- */
-  function toggleVote(id, heartEl){
+  /* ---------- notation, achat confirmé, commentaires ---------- */
+  function rateItem(id, val){
     const it=items.find(x=>x.id===id); if(!it)return;
-    const votes={louis:!!it.votes.louis, pauline:!!it.votes.pauline};
-    votes[me]=!votes[me];
-    it.votes=votes;                                  // mise à jour optimiste
-    if(heartEl){ heartEl.classList.add("pop"); setTimeout(()=>heartEl.classList.remove("pop"),400); }
-    toast(votes[me] ? `❤️ Vote ajouté (${label(me)})` : `Vote retiré (${label(me)})`);
+    const cur=(it.ratings&&it.ratings[me])||0;
+    const next = cur===val ? 0 : val;      // retaper la même étoile efface la note
+    it.ratings = {louis:it.ratings.louis||0, pauline:it.ratings.pauline||0, [me]: next};
     renderAll();
     if(modalOpenId===id) openModal(id);
-    persistVote(id, votes);
+    toast(next ? `★ Note enregistrée (${label(me)})` : `Note retirée (${label(me)})`);
+    persistField(id, {ratings: it.ratings});
   }
-  async function persistVote(id, votes){
+  function togglePurchased(id){
+    const it=items.find(x=>x.id===id); if(!it)return;
+    it.purchased=!it.purchased;
+    renderAll();
+    if(modalOpenId===id) openModal(id);
+    toast(it.purchased ? "✅ Marqué comme acheté" : "Retiré des achats confirmés");
+    persistField(id, {purchased: it.purchased});
+  }
+  function addComment(id, text){
+    text=(text||"").trim(); if(!text) return;
+    const it=items.find(x=>x.id===id); if(!it)return;
+    it.comments=[...(it.comments||[]), {author:me, text, ts:Date.now()}];
+    renderAll();
+    if(modalOpenId===id) openModal(id);
+    persistField(id, {comments: it.comments});
+  }
+  async function persistField(id, patch){
     if(CLOUD){
       flashSync();
-      const {error}=await sb.from("items").update({votes}).eq("id",id);
-      if(error){ toast("⚠️ Synchro du vote échouée"); console.error(error); }
+      const {error}=await sb.from("items").update(patch).eq("id",id);
+      if(error){ toast("⚠️ Synchro échouée"); console.error(error); }
     } else lsSave();
   }
 
@@ -634,14 +736,20 @@
   function openModal(id){
     const it=items.find(x=>x.id===id); if(!it)return;
     modalOpenId=id;
-    const vc=voteCount(it);
-    const voted=it.votes[me];
+    const avg=avgRating(it), cnt=ratingCount(it), myRating=(it.ratings&&it.ratings[me])||0;
     const photo = validUrl(it.photo)
       ? `<img class="m-photo" src="${esc(it.photo)}" alt="${esc(it.name)}" onerror="this.outerHTML='<div class=\\'m-photo placeholder\\'>${CAT_EMOJI[it.cat]||'📦'}</div>'">`
       : `<div class="m-photo placeholder">${CAT_EMOJI[it.cat]||"📦"}</div>`;
     const linkBtn = validUrl(it.link)
       ? `<a class="m-link" href="${esc(it.link)}" target="_blank" rel="noopener">🔗 Voir chez le vendeur</a>` : "";
     const byLabel = label(it.by);
+    const commentsHtml = (it.comments&&it.comments.length)
+      ? it.comments.slice().sort((a,b)=>a.ts-b.ts).map(c=>`
+        <div class="comment">
+          <div class="c-head"><span>${esc(label(c.author))}</span><span>${timeAgo(c.ts)}</span></div>
+          <div class="c-text">${esc(c.text)}</div>
+        </div>`).join("")
+      : `<p class="no-comments">Aucun commentaire pour l'instant.</p>`;
 
     $("#modal").innerHTML = `
       <div class="grab"></div>
@@ -655,27 +763,44 @@
           <span class="badge">${CAT_EMOJI[it.cat]||"📦"} ${esc(it.cat)}</span>
           ${it.subcat?`<span class="badge sub">${esc(it.subcat)}</span>`:""}
           <span class="by ${it.by==='pauline'?'pauline':'louis'}">👤 ${byLabel}</span>
+          ${it.purchased?'<span class="purchased-badge">✅ Achat confirmé</span>':""}
         </div>
 
         <div class="m-info">
           <div class="m-row"><span class="k">Vendeur</span><span class="v">${it.vendor?esc(it.vendor):"—"}</span></div>
           <div class="m-row"><span class="k">Prix</span><span class="v">${fmtPrice(it.price)}</span></div>
           <div class="m-row"><span class="k">Catégorie</span><span class="v">${esc(it.cat)}${it.subcat?" · "+esc(it.subcat):""}</span></div>
-          <div class="m-row"><span class="k">Cœurs</span><span class="v">${vc} ❤️</span></div>
+          <div class="m-row"><span class="k">Note moyenne</span><span class="v">${avg?`★ ${avg.toFixed(1)} (${cnt})`:"—"}</span></div>
           <div class="m-row"><span class="k">Ajouté</span><span class="v">${timeAgo(it.created)} · ${byLabel}</span></div>
         </div>
 
-        <div class="vote-who">
-          <span class="chip louis ${it.votes.louis?'on':''}">Louis ${it.votes.louis?'❤️':'🤍'}</span>
-          <span class="chip pauline ${it.votes.pauline?'on':''}">Pauline ${it.votes.pauline?'❤️':'🤍'}</span>
+        <div style="text-align:center;margin-top:18px">
+          <div style="font-size:13px;font-weight:800;color:var(--ink-soft);margin-bottom:6px">Ta note, ${esc(label(me))}</div>
+          ${starsHtml(myRating,"lg",true,it.id)}
+        </div>
+        <div class="rate-who">
+          <span class="chip louis">Louis · ${ratingStarsText(it.ratings.louis)}</span>
+          <span class="chip pauline">Pauline · ${ratingStarsText(it.ratings.pauline)}</span>
         </div>
 
+        <button class="m-buy ${it.purchased?'on':''}" data-buy="${it.id}">
+          ${it.purchased ? "✅ Achat confirmé" : "☐ On l'achète !"}
+        </button>
+
         <div class="m-actions">
-          <button class="m-vote ${voted?'voted':''}" data-vote="${it.id}">
-            ${voted?'❤️':'🤍'} ${voted?'Voté':'Voter'}
-          </button>
+          <button class="m-edit" data-edit="${it.id}">✏️ Modifier</button>
           ${linkBtn}
         </div>
+
+        <div class="comments">
+          <h4>Commentaires</h4>
+          ${commentsHtml}
+          <form class="comment-form" data-comment="${it.id}">
+            <input type="text" placeholder="Ajouter une note…" maxlength="200" required>
+            <button type="submit">Envoyer</button>
+          </form>
+        </div>
+
         <button class="m-del" data-del="${it.id}">🗑️ Supprimer ce meuble</button>
       </div>`;
     $("#modalBg").classList.add("open");
@@ -685,6 +810,7 @@
     modalOpenId=null;
     $("#modalBg").classList.remove("open");
     document.body.style.overflow="";
+    const m=$("#modal"); m.style.transform=""; m.style.transition="";
   }
 
   /* ---------- navigation ---------- */
@@ -698,8 +824,18 @@
   /* ---------- events ---------- */
   // nav
   document.querySelectorAll(".nav button").forEach(b=>{
-    b.addEventListener("click",()=>switchView(b.dataset.view));
+    b.addEventListener("click",()=>{
+      if(editingId && b.dataset.view!=="add") cancelEdit();
+      switchView(b.dataset.view);
+    });
   });
+  function cancelEdit(){
+    editingId=null;
+    $("#addTitle").innerHTML='Ajouter un meuble<small id="addSubtitle">Une jolie trouvaille à partager ?</small>';
+    $("#submitBtn").textContent="Ajouter au catalogue";
+    $("#addForm").reset(); syncSubcat(); $("#photoPreview").style.display="none";
+    formAddedBy=me||"louis"; updateAddedByUI();
+  }
 
   // ----- identité (Louis / Pauline) -----
   function updateAddedByUI(){
@@ -758,26 +894,32 @@
     else img.style.display="none";
   });
 
-  // submit
+  // submit (ajout ou édition selon editingId)
   $("#addForm").addEventListener("submit",e=>{
     e.preventDefault();
     const name=$("#f-name").value.trim();
     if(!name){ toast("Donne un nom au meuble 🙂"); return; }
     const cat=$("#f-cat").value;
-    const it={
-      id: genId(),
-      name,
-      cat,
+    const base={
+      name, cat,
       subcat: SUBCATS[cat] ? $("#f-subcat").value : "",
       price: $("#f-price").value.trim(),
       vendor: $("#f-vendor").value.trim(),
       link: $("#f-link").value.trim(),
       photo: $("#f-photo").value.trim(),
-      by: formAddedBy,
-      votes:{louis:false,pauline:false},
-      created: Date.now()
+      by: formAddedBy
     };
-    addItem(it);
+    if(editingId){
+      const it=items.find(x=>x.id===editingId);
+      if(it){ Object.assign(it, base); updateItem(it); toast("✏️ "+name+" mis à jour"); }
+      editingId=null;
+    } else {
+      const it=Object.assign({id:genId(), ratings:{louis:0,pauline:0}, purchased:false, comments:[], created:Date.now()}, base);
+      addItem(it);
+      toast("✨ "+name+" ajouté !");
+    }
+    $("#addTitle").innerHTML='Ajouter un meuble<small id="addSubtitle">Une jolie trouvaille à partager ?</small>';
+    $("#submitBtn").textContent="Ajouter au catalogue";
     e.target.reset();
     syncSubcat();
     $("#photoPreview").style.display="none";
@@ -785,16 +927,40 @@
     formAddedBy=me||"louis";
     updateAddedByUI();
     switchView("feed");
-    toast("✨ "+name+" ajouté !");
   });
 
-  // delegated clicks: cards, votes, empty CTA
+  // ouvre le formulaire pré-rempli pour modifier un meuble existant
+  function openEditForm(id){
+    const it=items.find(x=>x.id===id); if(!it)return;
+    editingId=id;
+    $("#f-name").value=it.name;
+    $("#f-cat").value=it.cat; syncSubcat();
+    if(it.subcat) $("#f-subcat").value=it.subcat;
+    $("#f-price").value=it.price||"";
+    $("#f-vendor").value=it.vendor||"";
+    $("#f-link").value=it.link||"";
+    $("#f-photo").value=it.photo||"";
+    if(validUrl(it.photo)){ const img=$("#photoPreview"); img.src=it.photo; img.style.display="block"; }
+    formAddedBy=it.by; updateAddedByUI();
+    $("#addTitle").innerHTML='Modifier le meuble<small id="addSubtitle">Mets à jour les infos puis enregistre</small>';
+    $("#submitBtn").textContent="Enregistrer les modifications";
+    closeModal();
+    switchView("add");
+  }
+
+  // delegated clicks: cards, notes, achat confirmé, édition, filtres, empty CTA
   document.addEventListener("click",e=>{
     const goadd=e.target.closest("[data-goadd]");
     if(goadd){ switchView("add"); return; }
 
-    const voteBtn=e.target.closest("[data-vote]");
-    if(voteBtn){ e.stopPropagation(); toggleVote(voteBtn.dataset.vote, voteBtn.querySelector(".hi")?voteBtn:null); return; }
+    const rateBtn=e.target.closest("[data-rate]");
+    if(rateBtn){ e.stopPropagation(); rateItem(rateBtn.dataset.rate, Number(rateBtn.dataset.val)); return; }
+
+    const buyBtn=e.target.closest("[data-buy]");
+    if(buyBtn){ togglePurchased(buyBtn.dataset.buy); return; }
+
+    const editBtn=e.target.closest("[data-edit]");
+    if(editBtn){ openEditForm(editBtn.dataset.edit); return; }
 
     const delBtn=e.target.closest("[data-del]");
     if(delBtn){
@@ -804,13 +970,87 @@
       return;
     }
 
+    const fc=e.target.closest("[data-filtercat]");
+    if(fc){
+      const v=fc.dataset.filtercat;
+      if(v==="__all__") activeCats.clear();
+      else { activeCats.has(v) ? activeCats.delete(v) : activeCats.add(v); }
+      renderCatalogue();
+      return;
+    }
+    const fconf=e.target.closest("[data-filterconfirmed]");
+    if(fconf){ onlyConfirmed=!onlyConfirmed; renderCatalogue(); return; }
+
     const card=e.target.closest(".card");
     if(card){ openModal(card.dataset.id); return; }
   });
 
-  // modal close
+  // ajout d'un commentaire (formulaire généré dynamiquement dans la modale)
+  document.addEventListener("submit",e=>{
+    const cf=e.target.closest("[data-comment]");
+    if(cf){
+      e.preventDefault();
+      const input=cf.querySelector("input");
+      addComment(cf.dataset.comment, input.value);
+      input.value="";
+    }
+  });
+
+  // modal close : clic hors modale, Escape, ou swipe vers le bas
   $("#modalBg").addEventListener("click",e=>{ if(e.target===$("#modalBg")) closeModal(); });
   document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+  (function setupModalSwipe(){
+    const m=$("#modal");
+    let startY=0, deltaY=0, dragging=false;
+    m.addEventListener("touchstart",e=>{
+      if(m.scrollTop>0) return;            // pas en haut du contenu -> laisse scroller
+      startY=e.touches[0].clientY; dragging=true; deltaY=0;
+      m.style.transition="none";
+    },{passive:true});
+    m.addEventListener("touchmove",e=>{
+      if(!dragging) return;
+      deltaY=e.touches[0].clientY-startY;
+      if(deltaY>0) m.style.transform=`translateY(${deltaY}px)`;
+    },{passive:true});
+    m.addEventListener("touchend",()=>{
+      if(!dragging) return;
+      dragging=false;
+      m.style.transition="transform .25s ease";
+      if(deltaY>80){ m.style.transform="translateY(100%)"; setTimeout(closeModal,180); }
+      else m.style.transform="";
+    });
+  })();
+
+  /* ---------- pull-to-refresh (Feed) ---------- */
+  (function setupPullToRefresh(){
+    const THRESHOLD=70;
+    let startY=0, delta=0, pulling=false;
+    document.addEventListener("touchstart",e=>{
+      if(!$("#view-feed").classList.contains("active") || window.scrollY>0) return;
+      startY=e.touches[0].clientY; pulling=true; delta=0;
+    },{passive:true});
+    document.addEventListener("touchmove",e=>{
+      if(!pulling) return;
+      delta=e.touches[0].clientY-startY;
+      if(delta>0) $("#pullIndicator").style.height=Math.min(delta*0.5,70)+"px";
+    },{passive:true});
+    document.addEventListener("touchend",()=>{
+      if(!pulling) return;
+      pulling=false;
+      const ind=$("#pullIndicator");
+      if(delta>THRESHOLD){
+        ind.style.height="46px";
+        $("#pullLabel").textContent="Actualisation…";
+        refreshFeed().then(()=>{
+          setTimeout(()=>{ ind.style.height="0px"; $("#pullLabel").textContent="Tirez pour rafraîchir"; },350);
+        });
+      } else ind.style.height="0px";
+    });
+  })();
+  async function refreshFeed(){
+    if(CLOUD) await fetchAll(); else items=lsLoad();
+    renderAll();
+  }
 
   /* ====================================================================
      COUCHE DONNÉES  (cloud Supabase  /  local localStorage)
@@ -834,6 +1074,17 @@
     } else lsSave();
     toast("Meuble supprimé");
   }
+  async function updateItem(it){
+    renderAll();
+    if(CLOUD){
+      flashSync();
+      const {error}=await sb.from("items").update({
+        name:it.name, cat:it.cat, subcat:it.subcat, price:it.price,
+        vendor:it.vendor, link:it.link, photo:it.photo, by:it.by
+      }).eq("id",it.id);
+      if(error){ toast("⚠️ Modification non synchronisée"); console.error(error); }
+    } else lsSave();
+  }
 
   function normalize(r){
     const cat=CATS.includes(r.cat)?r.cat:"Autre";
@@ -843,7 +1094,9 @@
       subcat:(subs&&subs.includes(r.subcat))?r.subcat:"",
       price:r.price==null?"":String(r.price),
       vendor:r.vendor||"", link:r.link||"", photo:r.photo||"", by:r.by==="pauline"?"pauline":"louis",
-      votes:(r.votes&&typeof r.votes==="object")?{louis:!!(r.votes.louis||r.votes.moi),pauline:!!r.votes.pauline}:{louis:false,pauline:false},
+      ratings:(r.ratings&&typeof r.ratings==="object")?{louis:Number(r.ratings.louis)||0,pauline:Number(r.ratings.pauline)||0}:{louis:0,pauline:0},
+      purchased: !!r.purchased,
+      comments: Array.isArray(r.comments) ? r.comments.map(c=>({author:c.author==="pauline"?"pauline":"louis", text:String(c.text||""), ts:Number(c.ts)||Date.now()})) : [],
       created:Number(r.created)||Date.now()
     };
   }
@@ -878,12 +1131,12 @@
 
   /* ---------- meubles de démo ---------- */
   const DEMO=[
-    {name:"Canapé velours côtelé",  cat:"Canapé",    price:"899", vendor:"Maisons du Monde",        link:"https://www.maisonsdumonde.com", photo:"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80", by:"louis",     votes:{louis:true, pauline:true}},
-    {name:"Chaise scandinave chêne",cat:"Chaise",    price:"79",  vendor:"IKEA",                    link:"https://www.ikea.com",            photo:"https://images.unsplash.com/photo-1503602642458-232111445657?w=800&q=80", by:"pauline", votes:{louis:false,pauline:true}},
-    {name:"Table basse travertin",  cat:"Table basse",price:"349", vendor:"Westwing",                link:"https://www.westwing.fr",         photo:"https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=800&q=80", by:"louis",     votes:{louis:true, pauline:false}},
-    {name:"Lit cannage 160×200",    cat:"Lit",       price:"599", vendor:"La Redoute Intérieurs",   link:"https://www.laredoute.fr",        photo:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80", by:"pauline", votes:{louis:true, pauline:true}},
-    {name:"Bibliothèque rotin",     cat:"Rangement", price:"249", vendor:"Made.com",                link:"",                                 photo:"https://images.unsplash.com/photo-1594620302200-9a762244a156?w=800&q=80", by:"louis",     votes:{louis:false,pauline:false}},
-    {name:"Lampe arc dorée",        cat:"Luminaire", subcat:"Lampadaire", price:"129", vendor:"Amazon",                  link:"https://www.amazon.fr",           photo:"https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800&q=80", by:"pauline", votes:{louis:true, pauline:false}}
+    {name:"Canapé velours côtelé",  cat:"Canapé",    price:"899", vendor:"Maisons du Monde",        link:"https://www.maisonsdumonde.com", photo:"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80", by:"louis",   ratings:{louis:5,pauline:4}, purchased:false, comments:[]},
+    {name:"Chaise scandinave chêne",cat:"Chaise",    price:"79",  vendor:"IKEA",                    link:"https://www.ikea.com",            photo:"https://images.unsplash.com/photo-1503602642458-232111445657?w=800&q=80", by:"pauline", ratings:{louis:0,pauline:4}, purchased:false, comments:[]},
+    {name:"Table basse travertin",  cat:"Table basse",price:"349", vendor:"Westwing",                link:"https://www.westwing.fr",         photo:"https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=800&q=80", by:"louis",   ratings:{louis:4,pauline:0}, purchased:false, comments:[]},
+    {name:"Lit cannage 160×200",    cat:"Lit",       price:"599", vendor:"La Redoute Intérieurs",   link:"https://www.laredoute.fr",        photo:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80", by:"pauline", ratings:{louis:5,pauline:5}, purchased:true,  comments:[]},
+    {name:"Bibliothèque rotin",     cat:"Rangement", price:"249", vendor:"Made.com",                link:"",                                 photo:"https://images.unsplash.com/photo-1594620302200-9a762244a156?w=800&q=80", by:"louis",   ratings:{louis:0,pauline:0}, purchased:false, comments:[]},
+    {name:"Lampe arc dorée",        cat:"Luminaire", subcat:"Lampadaire", price:"129", vendor:"Amazon",                  link:"https://www.amazon.fr",           photo:"https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800&q=80", by:"pauline", ratings:{louis:4,pauline:0}, purchased:false, comments:[]}
   ];
   async function maybeSeed(){
     if(!SEED_DEMO || items.length || localStorage.getItem("nidouille.seeded")) return;
