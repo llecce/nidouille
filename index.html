@@ -100,7 +100,8 @@
   }
   .card:active{transform:scale(.985)}
   .card .thumb{
-    width:100%;aspect-ratio:16/10;background:var(--accent-soft);object-fit:cover;display:block;
+    width:100%;aspect-ratio:16/10;background:var(--accent-soft);
+    object-fit:cover;object-position:center center;display:block;
   }
   .card .thumb.placeholder{
     display:grid;place-items:center;
@@ -248,7 +249,7 @@
   }
   @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .modal .grab{width:42px;height:5px;border-radius:99px;background:#d9ccbb;margin:10px auto 4px}
-  .modal .m-photo{width:100%;aspect-ratio:16/10;object-fit:cover;background:var(--accent-soft)}
+  .modal .m-photo{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:center center;background:var(--accent-soft);display:block}
   .modal .m-photo.placeholder{display:grid;place-items:center;font-size:50px;color:#c9a98c;
     background:repeating-linear-gradient(45deg,#f0e2d3,#f0e2d3 14px,#ecdcca 14px,#ecdcca 28px)}
   .m-body{padding:18px 20px}
@@ -552,7 +553,7 @@
     const cls="stars"+(size==="lg"?" m-stars":size==="sm"?" stars-sm":"");
     let h=`<span class="${cls}">`;
     for(let i=1;i<=5;i++){
-      h+=`<button type="button" class="star-btn ${i<=value?'filled':''}" ${interactive?`data-rate="${id}" data-val="${i}" onclick="event.stopPropagation()"`:"disabled"}>★</button>`;
+      h+=`<button type="button" class="star-btn ${i<=value?'filled':''}" ${interactive?`data-rate="${id}" data-val="${i}"`:"disabled"}>★</button>`;
     }
     return h+"</span>";
   }
