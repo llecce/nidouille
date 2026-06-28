@@ -896,6 +896,14 @@
   }
 
   /* ---------- init ---------- */
+  // Visite ?reset une fois sur un appareil pour effacer son cache local périmé
+  // (utile si des meubles tests restent affichés alors que le cloud est vide).
+  if(new URLSearchParams(location.search).has("reset")){
+    localStorage.removeItem(KEY);
+    localStorage.removeItem("nidouille.seeded");
+    history.replaceState(null,"",location.pathname);
+  }
+
   async function init(){
     // identité : montre l'écran de choix tant que Louis/Pauline n'est pas sélectionné
     if(me){ applyMe(); $("#gate").classList.add("hidden"); }
