@@ -130,10 +130,17 @@
   .by.pauline{color:#a0567f;background:#fbe9f3;border-color:#f2d2e3}
 
   /* rating stars + link */
-  .actions{display:flex;align-items:center;gap:6px}
-  .link-pill{
-    width:34px;height:34px;border-radius:999px;border:1px solid var(--line);background:#fff;
-    display:grid;place-items:center;color:var(--accent);text-decoration:none;font-size:15px;flex:none;
+  .photo-link{
+    position:absolute;top:10px;right:10px;z-index:2;
+    width:34px;height:34px;border-radius:999px;background:rgba(255,250,243,.92);
+    display:grid;place-items:center;color:var(--accent);text-decoration:none;font-size:15px;
+    box-shadow:0 4px 12px rgba(74,64,56,.22);
+  }
+  .photo-rating{
+    position:absolute;bottom:10px;right:10px;z-index:2;
+    background:rgba(255,250,243,.92);color:#b5811f;font-weight:800;font-size:12.5px;
+    padding:5px 10px;border-radius:999px;box-shadow:0 4px 12px rgba(74,64,56,.22);
+    display:flex;align-items:center;gap:3px;
   }
   .stars{display:inline-flex;gap:1px}
   .stars .star-btn{border:0;background:transparent;padding:2px;cursor:pointer;
@@ -179,13 +186,6 @@
   .field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,139,107,.16)}
   .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a7d70' d='M6 8 0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .seg{display:flex;gap:10px}
-  .seg button{
-    flex:1;border:1px solid var(--line);background:var(--card);border-radius:13px;padding:12px;
-    font:inherit;font-weight:700;font-size:15px;color:var(--ink-soft);cursor:pointer;transition:.18s;
-  }
-  .seg button.active.louis{background:#e8f5f0;border-color:#9cd3c0;color:#2f6b5c}
-  .seg button.active.pauline{background:#fbe9f3;border-color:#eeb9d6;color:#933f72}
   .submit{
     margin-top:6px;border:0;background:linear-gradient(135deg,var(--accent),#e0a583);color:#fff;
     font:inherit;font-weight:800;font-size:16px;padding:15px;border-radius:15px;cursor:pointer;
@@ -266,6 +266,7 @@
   .m-edit{
     flex:1;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:14px;
     font:inherit;font-weight:800;font-size:16px;cursor:pointer;color:var(--ink);transition:.18s;
+    display:flex;align-items:center;justify-content:center;text-align:center;
   }
   .m-buy{
     width:100%;margin-top:18px;border:1px solid var(--line);background:var(--card);border-radius:14px;
@@ -278,7 +279,7 @@
   .m-link{
     flex:1;text-decoration:none;border:0;border-radius:14px;padding:14px;
     background:linear-gradient(135deg,var(--accent),#e0a583);color:#fff;font-weight:800;font-size:16px;
-    display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 16px rgba(201,139,107,.4)
+    display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:0 6px 16px rgba(201,139,107,.4)
   }
   .m-del{
     margin-top:12px;width:100%;border:1px solid #f0d3cf;background:#fff;color:#c25b54;
@@ -425,14 +426,6 @@
           <textarea id="f-desc" placeholder="Ex. Vu chez Merci, correspond bien au salon" maxlength="500"></textarea>
         </div>
 
-        <div class="field">
-          <label>Ajouté par</label>
-          <div class="seg" id="addedBy">
-            <button type="button" data-who="louis" class="active louis">Louis</button>
-            <button type="button" data-who="pauline">Pauline</button>
-          </div>
-        </div>
-
         <button class="submit" type="submit" id="submitBtn">Ajouter au catalogue</button>
       </form>
     </section>
@@ -508,7 +501,6 @@
   const PEOPLE = {louis:"Louis", pauline:"Pauline"};
   const label = w => PEOPLE[w] || "Louis";
   let me = localStorage.getItem("nidouille.me"); // "louis" | "pauline" | null (choisi à l'entrée)
-  let formAddedBy = me || "louis";  // qui ajoute le meuble dans le form
   let modalOpenId = null;           // meuble ouvert dans la modale (refresh temps réel)
   let editingId = null;             // id du meuble en cours d'édition (formulaire "Ajouter" réutilisé)
   let activeCats = new Set();       // filtres catégorie actifs dans le Catalogue (vide = tous)
@@ -586,15 +578,16 @@
 
   function cardHtml(it, opts){
     opts=opts||{};
-    const avg=avgRating(it), cnt=ratingCount(it), myRating=(it.ratings&&it.ratings[me])||0;
-    const linkPill = validUrl(it.link)
-      ? `<a class="link-pill" href="${esc(it.link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Voir le produit">🔗</a>` : "";
+    const avg=avgRating(it), myRating=(it.ratings&&it.ratings[me])||0;
+    const photoLink = validUrl(it.link)
+      ? `<a class="photo-link" href="${esc(it.link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Voir le produit">🔗</a>` : "";
+    const photoRating = avg ? `<div class="photo-rating">★ ${avg.toFixed(1)}</div>` : "";
     const crown = opts.top ? `<div class="crown">👑 Top pick</div>` : "";
     const byClass = it.by==="pauline"?"pauline":"louis";
     const byLabel = label(it.by);
     return `
     <article class="card" data-id="${it.id}">
-      <div class="thumb-wrap">${crown}${thumbHtml(it)}</div>
+      <div class="thumb-wrap">${crown}${photoLink}${thumbHtml(it)}${photoRating}</div>
       <div class="card-body">
         <div class="card-top">
           <h3 class="card-name">${esc(it.name)}</h3>
@@ -608,13 +601,9 @@
         </div>
         <div class="meta-line">
           <div class="vendor">🏬 <span>${it.vendor?esc(it.vendor):"Vendeur inconnu"}</span></div>
-          <div class="actions">
-            ${linkPill}
-            ${starsHtml(myRating,"sm",true,it.id)}
-          </div>
         </div>
         <div class="rating-line">
-          ${avg ? `<span class="rating-badge">★ ${avg.toFixed(1)}</span><span class="rating-count">(${cnt} avis)</span>` : `<span class="rating-count">Pas encore noté</span>`}
+          ${starsHtml(myRating,"sm",true,it.id)}
         </div>
       </div>
     </article>`;
@@ -821,24 +810,14 @@
     $("#addTitle").innerHTML='Ajouter un meuble<small id="addSubtitle">Une jolie trouvaille à partager ?</small>';
     $("#submitBtn").textContent="Ajouter au catalogue";
     $("#addForm").reset(); syncSubcat(); $("#photoPreview").style.display="none";
-    formAddedBy=me||"louis"; updateAddedByUI();
   }
 
   // ----- identité (Louis / Pauline) -----
-  function updateAddedByUI(){
-    document.querySelectorAll("#addedBy button").forEach(x=>{
-      const on=x.dataset.who===formAddedBy;
-      x.classList.toggle("active",on);
-      x.classList.toggle("louis", x.dataset.who==="louis" && on);
-      x.classList.toggle("pauline", x.dataset.who==="pauline" && on);
-    });
-  }
   function applyMe(){
     const name=label(me);
     $("#meName").textContent=name;
     $("#meAva").textContent=name[0];
     $("#mePill").className="me-pill "+(me||"louis");
-    formAddedBy=me||"louis"; updateAddedByUI();
   }
   function chooseMe(who){
     me=who; localStorage.setItem("nidouille.me",who);
@@ -850,13 +829,6 @@
     const b=e.target.closest("[data-me]"); if(b) chooseMe(b.dataset.me);
   });
   $("#mePill").addEventListener("click",()=>{ $("#gate").classList.remove("hidden"); });
-
-  // form added-by
-  $("#addedBy").addEventListener("click",e=>{
-    const b=e.target.closest("button"); if(!b)return;
-    formAddedBy=b.dataset.who;
-    updateAddedByUI();
-  });
 
   // sous-type : affiche/peuple le 2e menu selon la catégorie choisie
   function syncSubcat(){
@@ -894,15 +866,16 @@
       vendor: $("#f-vendor").value.trim(),
       link: $("#f-link").value.trim(),
       photo: $("#f-photo").value.trim(),
-      description: $("#f-desc").value.trim(),
-      by: formAddedBy
+      description: $("#f-desc").value.trim()
     };
     if(editingId){
+      // l'auteur d'origine (it.by) n'est pas modifié lors d'une édition
       const it=items.find(x=>x.id===editingId);
       if(it){ Object.assign(it, base); updateItem(it); toast("✏️ "+name+" mis à jour"); }
       editingId=null;
     } else {
-      const it=Object.assign({id:genId(), ratings:{louis:0,pauline:0}, purchased:false, created:Date.now()}, base);
+      // l'auteur est automatiquement la personne connectée
+      const it=Object.assign({id:genId(), ratings:{louis:0,pauline:0}, purchased:false, created:Date.now(), by: me||"louis"}, base);
       addItem(it);
       toast("✨ "+name+" ajouté !");
     }
@@ -911,9 +884,6 @@
     e.target.reset();
     syncSubcat();
     $("#photoPreview").style.display="none";
-    // re-sélectionne ton identité comme auteur par défaut
-    formAddedBy=me||"louis";
-    updateAddedByUI();
     switchView("feed");
   });
 
@@ -930,7 +900,6 @@
     $("#f-photo").value=it.photo||"";
     if(validUrl(it.photo)){ const img=$("#photoPreview"); img.src=it.photo; img.style.display="block"; }
     $("#f-desc").value=it.description||"";
-    formAddedBy=it.by; updateAddedByUI();
     $("#addTitle").innerHTML='Modifier le meuble<small id="addSubtitle">Mets à jour les infos puis enregistre</small>';
     $("#submitBtn").textContent="Enregistrer les modifications";
     closeModal();
