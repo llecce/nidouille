@@ -100,7 +100,7 @@
   }
   .card:active{transform:scale(.985)}
   .card .thumb{
-    width:100%;aspect-ratio:16/10;background:var(--accent-soft);
+    position:absolute;inset:0;width:100%;height:100%;background:var(--accent-soft);
     object-fit:cover;object-position:center center;display:block;
   }
   .card .thumb.placeholder{
@@ -154,7 +154,7 @@
     font-size:11.5px;font-weight:800;padding:5px 10px;border-radius:999px;
     box-shadow:0 4px 12px rgba(217,164,65,.5);display:flex;align-items:center;gap:4px;
   }
-  .thumb-wrap{position:relative}
+  .thumb-wrap{position:relative;overflow:hidden;padding-top:62.5%}
 
   /* ---------- Catalogue ---------- */
   .cat-group{margin-bottom:26px}
@@ -249,7 +249,8 @@
   }
   @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .modal .grab{width:42px;height:5px;border-radius:99px;background:#d9ccbb;margin:10px auto 4px}
-  .modal .m-photo{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:center center;background:var(--accent-soft);display:block}
+  .m-photo-wrap{position:relative;overflow:hidden;padding-top:62.5%}
+  .modal .m-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:var(--accent-soft);display:block}
   .modal .m-photo.placeholder{display:grid;place-items:center;font-size:50px;color:#c9a98c;
     background:repeating-linear-gradient(45deg,#f0e2d3,#f0e2d3 14px,#ecdcca 14px,#ecdcca 28px)}
   .m-body{padding:18px 20px}
@@ -737,7 +738,7 @@
       ? `<img class="m-photo" src="${esc(it.photo)}" alt="${esc(it.name)}" onerror="this.outerHTML='<div class=\\'m-photo placeholder\\'>${CAT_EMOJI[it.cat]||'📦'}</div>'">`
       : `<div class="m-photo placeholder">${CAT_EMOJI[it.cat]||"📦"}</div>`;
     const linkBtn = validUrl(it.link)
-      ? `<a class="m-link" href="${esc(it.link)}" target="_blank" rel="noopener">🔗 Voir chez le vendeur</a>` : "";
+      ? `<a class="m-link" href="${esc(it.link)}" target="_blank" rel="noopener">Voir chez le vendeur</a>` : "";
     const byLabel = label(it.by);
     const descHtml = it.description ? `
         <div class="m-desc">
@@ -747,7 +748,7 @@
 
     $("#modal").innerHTML = `
       <div class="grab"></div>
-      ${photo}
+      <div class="m-photo-wrap">${photo}</div>
       <div class="m-body">
         <div class="m-top">
           <h2 class="m-name">${esc(it.name)}</h2>
@@ -779,11 +780,11 @@
         </div>
 
         <button class="m-buy ${it.purchased?'on':''}" data-buy="${it.id}">
-          ${it.purchased ? "✅ Achat confirmé" : "☐ On l'achète !"}
+          ${it.purchased ? "Achat confirmé" : "On l'achète !"}
         </button>
 
         <div class="m-actions">
-          <button class="m-edit" data-edit="${it.id}">✏️ Modifier</button>
+          <button class="m-edit" data-edit="${it.id}">Modifier</button>
           ${linkBtn}
         </div>
 
